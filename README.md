@@ -46,7 +46,7 @@ using Basil
 
 # 1. put the input file in a working directory
 workdir = mktempdir()               # or an existing model directory
-inputfile = joinpath(workdir, "indenter.in")
+inputfile = joinpath(workdir, "INn3A0")   # same name as in the basil examples
 cp(example_input(:indenter), inputfile)
 
 # 2. run the solver (creates FD.sols/ and FD.out/ inside workdir)

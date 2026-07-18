@@ -11,9 +11,9 @@ using Basil
 using CairoMakie
 
 workdir = mktempdir()
-cp(example_input(:indenter), joinpath(workdir, "indenter.in"))
+cp(example_input(:indenter), joinpath(workdir, "INn3A0"))
 
-result = run_basil(joinpath(workdir, "indenter.in"))
+result = run_basil(joinpath(workdir, "INn3A0"))
 recs = read_solution(result.solution)
 println("saved $(length(recs)) records: t = ", solution_time.(recs))
 

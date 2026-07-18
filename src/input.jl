@@ -115,18 +115,23 @@ function write_input(path::AbstractString, inp::BasilInput)
     return path
 end
 
+# bundled inputs keep their upstream basil filenames; symbols are aliases
+const EXAMPLE_INPUTS = Dict(:indenter => "INn3A0")
+
 """
     example_input(name::Symbol = :indenter) -> String
 
 Path to a bundled, runnable basil input template (copy it into a working
-directory, edit, then [`run_basil`](@ref) it). Currently available:
-`:indenter` — a copy of model `INn3A0` from the upstream basil
+directory, edit, then [`run_basil`](@ref) it). The bundled files keep their
+upstream basil filenames; currently available:
+`:indenter` (= `:INn3A0`) — model `INn3A0` from the upstream basil
 `examples/indenter` suite: the basic Cartesian indenter of Houseman &
 England (1986), power-law exponent n = 3 (`SE=3.0`), Argand number 0
 (`ARGAN=0.0`, no buoyancy).
 """
 function example_input(name::Symbol=:indenter)
-    path = joinpath(@__DIR__, "..", "examples", "inputs", string(name) * ".in")
+    file = get(EXAMPLE_INPUTS, name, string(name))
+    path = joinpath(@__DIR__, "..", "examples", "inputs", file)
     isfile(path) || error("no bundled example input named $name")
     return abspath(path)
 end

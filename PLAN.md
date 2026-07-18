@@ -94,7 +94,7 @@ basil_jl/
 ├── ext/BasilMakieExt.jl    # plotmesh / plotfield / plotvelocity via Makie
 ├── examples/
 │   ├── indenter.jl         # end-to-end demo
-│   └── inputs/indenter.in  # bundled template (from basil examples, GPL)
+│   └── inputs/INn3A0     # bundled template (from basil examples, GPL)
 ├── test/runtests.jl
 └── .github/workflows/      # CI.yml, TagBot.yml, CompatHelper.yml
 ```
