@@ -35,47 +35,26 @@ julia> ]
 pkg> add https://github.com/wenrongcao/Basil.jl
 ```
 
-## Quick start: the indenter problem
+## Quick start: run an existing basil input file
+
+`run_basil` works on any classic basil input file you already have. Here we
+use the bundled `INn3A0` indenter template (`example_input(:indenter)`) —
+substitute the path to your own input file.
 
 ```julia
 using Basil
 
-# 1. build an input file (Houseman & England 1986 indenter, coarsened)
-inp = BasilInput("indenter demo")
-command!(inp, "MESH";     TYPE=0, NX=32, FAULT=0, AREA=0.05, QUALITY=15)
-command!(inp, "GEOMETRY"; XZERO=0.0, XLEN=1.0, YZERO=0.0, YLEN=1.0, NCOMP=0, IGRAV=4)
-command!(inp, "VISDENS";  SE=3.0)
-command!(inp, "LAYER";    THICKNESS=nothing, HLENSC=50.0, BDEPSC=0.35,
-                          ARGAN=0.0, THRESH=10.0, BRGAN=0.0, RISOST=0.0628)
-command!(inp, "BCOND")
-command!(inp, "LAGRANGE"; MARKERS=nothing)
-command!(inp, "SOLVE";    AC=5.0e-7, ACNL=5.0e-6, ITSTOP=1000)
-command!(inp, "STEPSIZE"; TYPE="RK", IDT0=40, MPDEF=10)
-command!(inp, "SAVE";     KSAVE=20, TSAVE=0.06)
-command!(inp, "STOP";     KEXIT=100, TEXIT=0.24, IWRITE=200)
-raw!(inp,
-     "ON X = 0.0 : UX = 0.0",
-     "ON X = 0.0 : TY = 0.0",
-     "ON X = 1.0 : UX = 0.0",
-     "ON X = 1.0 : UY = 0.0",
-     "ON Y = 1.0 : UX = 0.0",
-     "ON Y = 1.0 : UY = 0.0",
-     "ON Y = 0.0 : UX = 0.0",
-     "ON Y = 0.0 : UY = 0.0",
-     "ON Y = 0.0 FOR X = 0.0 TO 0.25 : UY = 1.0",
-     "ON Y = 0.0 FOR X = 0.25 TO 0.5 : UY = 1.0 TO 0.0 : TP = 2")
-command!(inp, "MARKERS"; ROWS=6, COLS=6, R=0.025,
-                         XMIN=0.1, XMAX=0.6, YMIN=0.1, YMAX=0.6)
-
-workdir = mktempdir()
-write_input(joinpath(workdir, "indent1"), inp)
+# 1. put the input file in a working directory
+workdir = mktempdir()               # or an existing model directory
+inputfile = joinpath(workdir, "indenter.in")
+cp(example_input(:indenter), inputfile)
 
 # 2. run the solver (creates FD.sols/ and FD.out/ inside workdir)
-result = run_basil(joinpath(workdir, "indent1"))
+result = run_basil(inputfile)
 
-# 3. read all saved timesteps
+# 3. read all saved timesteps from the binary solution file
 recs = read_solution(result.solution)
-rec  = recs[end]
+rec  = recs[end]                    # final state
 solution_time(rec)          # dimensionless model time
 x, y   = coordinates(rec)   # nodal positions (deformed mesh)
 ux, uy = velocity(rec)      # nodal velocities
@@ -89,10 +68,33 @@ plotfield(rec, thickness(rec); title="crustal thickness, t=$(solution_time(rec))
 plotvelocity(rec; decimate=4)                   # velocity arrows
 ```
 
-Prefer editing classic basil input files directly? `example_input(:indenter)`
-returns a bundled template; `run_basil` works on any existing input file. The
-classic PostScript plotter is also wrapped: `run_sybilps("figure.log")` (the
+Already have solution files from earlier basil runs? `read_solution` works on
+any `FD.sols/<name>` file directly — no need to rerun the model. The classic
+PostScript plotter is also wrapped: `run_sybilps("figure.log")` (the
 interactive X11 `sybil` GUI is not part of basil_jll).
+
+## Building input files from Julia (optional)
+
+Input files can also be composed programmatically — `command!` serializes any
+basil keyword command, `raw!` adds free-form lines (boundary conditions,
+regions):
+
+```julia
+inp = BasilInput("my model")
+command!(inp, "MESH";     TYPE=0, NX=32, AREA=0.05, QUALITY=15)
+command!(inp, "GEOMETRY"; XZERO=0.0, XLEN=1.0, YZERO=0.0, YLEN=1.0, NCOMP=0)
+command!(inp, "VISDENS";  SE=3.0)
+command!(inp, "SOLVE";    AC=5.0e-7, ACNL=5.0e-6, ITSTOP=1000)
+command!(inp, "STEPSIZE"; TYPE="RK", IDT0=40, MPDEF=10)
+command!(inp, "STOP";     KEXIT=100, TEXIT=0.24)
+raw!(inp,
+     "ON X = 0.0 : UX = 0.0",
+     "ON Y = 0.0 FOR X = 0.0 TO 0.25 : UY = 1.0")
+write_input(joinpath(workdir, "mymodel"), inp)
+```
+
+See the bundled template (`example_input(:indenter)`) and `man basil` in the
+upstream repo for the full command vocabulary.
 
 ## API
 
