@@ -1,5 +1,7 @@
-# The classic indenter experiment (Houseman & England 1986), run end-to-end
-# from Julia and visualized with CairoMakie. From this directory:
+# The classic indenter experiment (Houseman & England 1986), model INn3A0 of
+# the upstream basil examples/indenter suite (power-law exponent n=3, Argand
+# number 0), run end-to-end from Julia and visualized with CairoMakie.
+# From this directory:
 #
 #     julia --project=.. -e 'include("indenter.jl")'
 #

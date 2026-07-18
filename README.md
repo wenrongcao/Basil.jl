@@ -16,9 +16,12 @@ basil_jll ships the solver as **executables** (no shared library), so this packa
    extension.
 
 ![Indenter example: deformed mesh, crustal thickness and velocity/strain markers](docs/img/indenter.png)
-*The bundled indenter example (Houseman & England 1986) at t = 0.24: deformed
-finite-element mesh, crustal thickness, and velocity field with strain-marker
-ellipses — produced by `examples/indenter.jl`.*
+*Model `INn3A0` from the upstream basil `examples/indenter` suite — the basic
+Cartesian indenter of Houseman & England (1986) with power-law exponent n = 3
+(`SE=3.0`) and Argand number Ar = 0 (`ARGAN=0.0`, no buoyancy) — at t = 0.24:
+deformed finite-element mesh, crustal thickness, and velocity field with
+strain-marker ellipses. Produced by `examples/indenter.jl` from the bundled
+copy of this input (`example_input(:indenter)`).*
 
 > **Platforms**: basil_jll has no Windows build — use WSL on Windows.
 > All basil quantities are dimensionless; see `man basil` in the upstream repo.

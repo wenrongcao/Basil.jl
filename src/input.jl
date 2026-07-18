@@ -120,7 +120,10 @@ end
 
 Path to a bundled, runnable basil input template (copy it into a working
 directory, edit, then [`run_basil`](@ref) it). Currently available:
-`:indenter` — the Houseman & England (1986) indenter problem.
+`:indenter` — a copy of model `INn3A0` from the upstream basil
+`examples/indenter` suite: the basic Cartesian indenter of Houseman &
+England (1986), power-law exponent n = 3 (`SE=3.0`), Argand number 0
+(`ARGAN=0.0`, no buoyancy).
 """
 function example_input(name::Symbol=:indenter)
     path = joinpath(@__DIR__, "..", "examples", "inputs", string(name) * ".in")

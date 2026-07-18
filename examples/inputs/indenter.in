@@ -1,3 +1,5 @@
+# Source: basil examples/indenter/INn3A0 (greg-houseman/basil v1.8.2)
+# Basic Cartesian indenter, Houseman & England (1986): n=3, Argand number 0
 1. Setup commands -
 ---------------------------------------------------------
   
