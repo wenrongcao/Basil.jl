@@ -1,0 +1,24 @@
+name = "Basil"
+uuid = "feaf5b71-8751-47ba-9a02-cb0324a07b35"
+authors = ["Wenrong Cao <caowenrong@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+basil_jll = "6e973506-4df8-57fe-abc1-d686a44d0ebe"
+
+[weakdeps]
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+
+[extensions]
+BasilMakieExt = "Makie"
+
+[compat]
+Makie = "0.20, 0.21, 0.22, 0.23, 0.24"
+basil_jll = "1.8.2"
+julia = "1.9"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
