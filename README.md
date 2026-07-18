@@ -108,13 +108,6 @@ interactive X11 `sybil` GUI is not part of basil_jll).
 different node order than the solution vector (`ex[nor[j]]` pairs with
 `uvp[j]`) — the accessors handle this for you.
 
-## How it relates to FastScape.jl
-
-The design follows [FastScape.jl](https://github.com/boriskaus/FastScape.jl)
-in spirit (thin wrapper over an Yggdrasil-built Fortran code), but FastScape's
-JLL exposes a shared library that Julia can `ccall`, while basil_jll exposes
-executables — hence the file-based subprocess interface here.
-
 ## Development / publishing checklist
 
 See [PLAN.md](PLAN.md) for the full design document, registration steps and
