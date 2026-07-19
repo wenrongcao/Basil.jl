@@ -2,7 +2,7 @@
 
 A thin Julia wrapper around [basil_jll](https://github.com/JuliaBinaryWrappers/basil_jll.jl),
 the precompiled binary distribution of [basil](https://github.com/greg-houseman/basil) —
-the 2-D finite-element viscous-flow code by G.A. Houseman, T.D. Barr and L.A. Evans
+the 2-D finite-element viscous-flow code by Houseman and England (1986)
 (plane-strain, thin viscous sheet, thin viscous shell and axisymmetric deformation
 of a viscous medium, with crustal-thickness evolution, faults and strain markers).
 
