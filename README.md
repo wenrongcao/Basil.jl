@@ -89,6 +89,21 @@ so you can inspect the expected outputs without running anything.
 
 ## Units
 
+**TL;DR — scaling back to real values.** Pick your length scale `D` (physical
+size of the unit mesh) and velocity scale `V₀` (physical velocity of a unit
+boundary condition), then multiply:
+
+```text
+real length      = value × D            (indenter: × 5000 km)
+real velocity    = value × V₀           (indenter: × 50 mm/yr)
+real time        = value × D/V₀         (indenter: × 100 Myr → t = 0.24 ⇒ 24 Myr)
+real strain rate = value × V₀/D         (indenter: × 3.2e-16 s⁻¹)
+crustal thickness = thickness(rec) × D × BDEPSC
+                                        (indenter: 0.02 × 5000 km × 0.35 = 35 km)
+```
+
+The details:
+
 basil works entirely in **normalized (dimensionless) quantities** — nothing
 returned by this package is in SI or geological units. For a velocity-driven
 model, choose a length scale `D` (the physical size of the unit mesh
