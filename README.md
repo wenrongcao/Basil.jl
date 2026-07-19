@@ -62,10 +62,17 @@ th     = thickness(rec)     # crustal thickness (exp of stored log-thickness)
 mx, my = markers(rec)       # strain-marker ellipses
 
 # 4. plot (loading any Makie backend activates the extension)
+#    each call plots ONE record — here the final state selected in step 3
 using CairoMakie
 plotmesh(rec)                                   # FE mesh (deformed)
 plotfield(rec, thickness(rec); title="crustal thickness, t=$(solution_time(rec))")
 plotvelocity(rec; decimate=4)                   # velocity arrows
+
+# to plot every saved timestep, loop over the records:
+for (i, r) in enumerate(recs)
+    save("thickness_$(lpad(i, 3, '0')).png",
+         plotfield(r, thickness(r); title="t = $(solution_time(r))"))
+end
 ```
 
 Already have solution files from earlier basil runs? `read_solution` works on
