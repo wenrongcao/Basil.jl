@@ -187,11 +187,14 @@ upstream repo for the full command vocabulary.
 different node order than the solution vector (`ex[nor[j]]` pairs with
 `uvp[j]`) — the accessors handle this for you.
 
-## Development / publishing checklist
+## Notes for developers
 
-See [PLAN.md](PLAN.md) for the full design document, registration steps and
-known pitfalls (record-format coupling to basil v1.8.2, Windows absence,
-GPL-3.0 licensing, etc.).
+- The solution reader implements the record layout written by `WRITESTORE`
+  (`basilsrc/kdvaux.f`) of basil v1.8.2 and validates every record's byte
+  count, so an incompatible future format fails loudly; keep the `basil_jll`
+  compat bound in sync when the jll is updated.
+- basil_jll has no Windows build, and the interactive `sybil` X11 GUI is not
+  part of the jll (batch `sybilps` is wrapped instead).
 
 ## License
 
