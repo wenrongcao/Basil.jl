@@ -62,8 +62,10 @@ th     = thickness(rec)     # crustal thickness (exp of stored log-thickness)
 mx, my = markers(rec)       # strain-marker ellipses
 
 # 4. plot (loading any Makie backend activates the extension)
-#    each call plots ONE record — here the final state selected in step 3
+#    each call plots ONE saved record — pick it by index first
 using CairoMakie
+rec = recs[3]        # e.g. the 3rd saved record; recs[1] is the initial
+                     # state (t=0), recs[end] the final state
 plotmesh(rec)                                   # FE mesh (deformed)
 plotfield(rec, thickness(rec); title="crustal thickness, t=$(solution_time(rec))")
 plotvelocity(rec; decimate=4)                   # velocity arrows
