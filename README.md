@@ -91,25 +91,41 @@ so you can inspect the expected outputs without running anything.
 
 basil works entirely in **normalized (dimensionless) quantities** — nothing
 returned by this package is in SI or geological units. For a velocity-driven
-model, choose a length scale `L` (the physical size corresponding to the unit
-mesh dimension) and a velocity scale `U` (the physical velocity corresponding
-to a boundary condition of 1), then:
+model, choose a length scale `D` (the physical size of the unit mesh
+dimension) and a velocity scale `V₀` (the physical velocity of a boundary
+condition of 1); dimensional values are then recovered as:
 
-| quantity | dimensionless value × | example (L = 2000 km, U = 50 mm/yr) |
-|---|---|---|
-| length / thickness (`coordinates`, `thickness`) | `L` | thickness 0.02 → 40 km |
-| velocity (`velocity`) | `U` | uy = 1 → 50 mm/yr |
-| time (`solution_time`) | `L/U` | t = 0.24 → 0.24 × 40 Myr ≈ 9.6 Myr |
-| strain rate | `U/L` | — |
+| quantity | dimensionless value × |
+|---|---|
+| length (`coordinates`, `thickness`) | `D` |
+| velocity (`velocity`) | `V₀` |
+| time (`solution_time`) | `D/V₀` |
+| strain rate | `V₀/D` |
 
-In the indenter example the boundary condition is `UY = 1` on a unit-square
-mesh, so `solution_time` equals the fractional indentation of the domain
-(t = 0.24 ⇒ the indenter has advanced 24 % of the domain length). The initial
-crustal thickness is `1/HLENSC` (HLENSC = L divided by the reference crustal
-thickness, so `HLENSC=50.0` with L = 2000 km means a 40 km crust). Stress,
-viscosity and buoyancy scales enter through the Argand number and related
-parameters — see Houseman & England (1986) and `man basil` in the upstream
-repo.
+For the bundled indenter model `INn3A0` the scaling is defined in
+[Houseman & England (1986)](https://github.com/greg-houseman/basil/blob/main/examples/indenter/Houseman_England_1986b.pdf),
+Table 1: `D = 5000 km`, `V₀ = 50 mm/yr`, lithosphere thickness
+`L = 100 km`, initial crustal thickness `S₀ = 35 km`. Concretely:
+
+- **time unit** `D/V₀ = 100 Myr`, so `solution_time(rec) = 0.24` is **24 Myr**
+  (the final composite figure corresponds to the "24 Ma" panels of the
+  paper's Figure 3; the paper's 40-Myr runs correspond to t = 0.4, i.e.
+  2000 km of India–Asia convergence);
+- with `UY = 1` on the unit mesh, `solution_time` also equals the fractional
+  indentation of the domain (t = 0.24 ⇒ the indenter has advanced 24 % of D
+  = 1200 km);
+- **thickness**: `HLENSC = 50 = D/L`, so `thickness(rec)` starts at
+  `1/HLENSC = 0.02`, which × D gives the 100-km sheet thickness;
+  `BDEPSC = 0.35 = S₀/L` sets the crust at 0.35 × 100 km = 35 km. To compare
+  with the paper's crustal-thickness contours (in units of L, starting at
+  0.35), use `BDEPSC * thickness(rec) * HLENSC`;
+- **strain rate unit** `V₀/D ≈ 3.2e-16 s⁻¹`;
+- stress/viscosity/buoyancy scales enter through the power-law coefficient
+  and the **Argand number** (paper's equation 6) — see the paper and
+  `man basil` in the upstream repo.
+
+For your own models, substitute your `D` and `V₀`; the table above is all
+there is to it.
 
 Already have solution files from earlier basil runs? `read_solution` works on
 any `FD.sols/<name>` file directly — no need to rerun the model. The classic
