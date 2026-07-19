@@ -24,7 +24,7 @@ strain-marker ellipses. Produced by `examples/indenter.jl` from the bundled
 copy of this input (`example_input(:indenter)`).*
 
 > **Platforms**: basil_jll has no Windows build — use WSL on Windows.
-> All basil quantities are dimensionless; see `man basil` in the upstream repo.
+> All basil quantities are dimensionless — see the *Units* section below.
 
 ## Installation
 
@@ -44,13 +44,17 @@ substitute the path to your own input file.
 ```julia
 using Basil
 
-# 1. put the input file in a working directory
-workdir = mktempdir()               # or an existing model directory
+# 1. put the input file in a working directory — all outputs will land there
+#    (use mktempdir() instead if you just want a throwaway test)
+workdir = mkpath(joinpath(pwd(), "outputs"))
 inputfile = joinpath(workdir, "INn3A0")   # same name as in the basil examples
 cp(example_input(:indenter), inputfile)
 
-# 2. run the solver (creates FD.sols/ and FD.out/ inside workdir)
-result = run_basil(inputfile)
+# 2. run the solver — following basil's own convention, the binary solution
+#    goes to <workdir>/FD.sols/INn3A0 and the log to <workdir>/FD.out/INn3A0.out
+result = run_basil(inputfile)       # add force=true to overwrite a previous run
+result.solution                     # full path of the solution file
+result.log                          # full path of the run log
 
 # 3. read all saved timesteps from the binary solution file
 recs = read_solution(result.solution)
@@ -70,12 +74,42 @@ plotmesh(rec)                                   # FE mesh (deformed)
 plotfield(rec, thickness(rec); title="crustal thickness, t=$(solution_time(rec))")
 plotvelocity(rec; decimate=4)                   # velocity arrows
 
-# to plot every saved timestep, loop over the records:
+# to plot every saved timestep, loop over the records; saving into the
+# same outputs folder keeps everything from the run together
 for (i, r) in enumerate(recs)
-    save("thickness_$(lpad(i, 3, '0')).png",
+    save(joinpath(workdir, "thickness_$(lpad(i, 3, '0')).png"),
          plotfield(r, thickness(r); title="t = $(solution_time(r))"))
 end
 ```
+
+A complete, committed run of this workflow lives in
+[`examples/`](examples): the input file (`inputs/INn3A0`), the driver script
+(`indenter.jl`), and the resulting solution, log and figures (`outputs/`),
+so you can inspect the expected outputs without running anything.
+
+## Units
+
+basil works entirely in **normalized (dimensionless) quantities** — nothing
+returned by this package is in SI or geological units. For a velocity-driven
+model, choose a length scale `L` (the physical size corresponding to the unit
+mesh dimension) and a velocity scale `U` (the physical velocity corresponding
+to a boundary condition of 1), then:
+
+| quantity | dimensionless value × | example (L = 2000 km, U = 50 mm/yr) |
+|---|---|---|
+| length / thickness (`coordinates`, `thickness`) | `L` | thickness 0.02 → 40 km |
+| velocity (`velocity`) | `U` | uy = 1 → 50 mm/yr |
+| time (`solution_time`) | `L/U` | t = 0.24 → 0.24 × 40 Myr ≈ 9.6 Myr |
+| strain rate | `U/L` | — |
+
+In the indenter example the boundary condition is `UY = 1` on a unit-square
+mesh, so `solution_time` equals the fractional indentation of the domain
+(t = 0.24 ⇒ the indenter has advanced 24 % of the domain length). The initial
+crustal thickness is `1/HLENSC` (HLENSC = L divided by the reference crustal
+thickness, so `HLENSC=50.0` with L = 2000 km means a 40 km crust). Stress,
+viscosity and buoyancy scales enter through the Argand number and related
+parameters — see Houseman & England (1986) and `man basil` in the upstream
+repo.
 
 Already have solution files from earlier basil runs? `read_solution` works on
 any `FD.sols/<name>` file directly — no need to rerun the model. The classic
