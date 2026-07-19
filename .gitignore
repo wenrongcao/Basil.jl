@@ -5,3 +5,8 @@ FD.out/
 !examples/outputs/FD.sols/
 !examples/outputs/FD.out/
 .claude/
+
+# macOS metadata
+.DS_Store
+._*
+.AppleDouble/
