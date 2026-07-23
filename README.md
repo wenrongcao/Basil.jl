@@ -28,11 +28,9 @@ copy of this input (`example_input(:indenter)`).*
 
 ## Installation
 
-Until the package is registered:
-
 ```julia
 julia> ]
-pkg> add https://github.com/wenrongcao/Basil.jl
+pkg> add Basil.jl
 ```
 
 ## Quick start: run an existing basil input file
