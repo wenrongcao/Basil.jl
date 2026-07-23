@@ -30,7 +30,7 @@ copy of this input (`example_input(:indenter)`).*
 
 ```julia
 julia> ]
-pkg> add Basil.jl
+pkg> add Basil
 ```
 
 ## Quick start: run an existing basil input file
